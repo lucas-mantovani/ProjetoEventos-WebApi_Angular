@@ -1,4 +1,5 @@
 using Eventos.API.Models;
+using Eventos.API.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventos.API.Controllers;
@@ -6,25 +7,26 @@ namespace Eventos.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class EventoController : ControllerBase
-{
-
-
+{    
+    private readonly DataContext _context;
     
-
-    public EventoController()
+    public EventoController(DataContext context)
     {
+        _context = context;
     }
 
     [HttpGet]
-    public Evento Get()
+    public IEnumerable<Evento> Get()
     {
-        return new Evento(){
-            Id = 1,
-            Tema = "Angular 11 e .NET 5",
-            Local = "Belo Horizonte",
-            Lote = "Primerio Lote",
-            QtdPessoas = 250,
-            DataEvento = DateTime.Now.AddDays(2).ToString()
-        };
+        return _context.Eventos;
+    }
+
+    [HttpGet("{id}")]
+    public Evento GetById(int id)
+    {
+        return _context.Eventos.FirstOrDefault(evento => evento.Id == id);
     }
 }
+
+
+
